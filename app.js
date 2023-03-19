@@ -34,14 +34,14 @@ const ListSchema = {
 };
 
 const List = mongoose.model("List", ListSchema);
-// var days = date();
+var days = date();
 app.get("/", function (req, res) {
   Item.find({}).then(function (results) {
     if (results.length === 0) {
       Item.insertMany(defaultItems);
       res.redirect("/");
     } else {
-      res.render("list", { listTitle: "Today", newListItem: results });
+      res.render("list", { listTitle: days, newListItem: results });
     }
   });
 });
@@ -49,12 +49,12 @@ app.get("/", function (req, res) {
 app.post("/", function (req, res) {
   const itemName = req.body.newItem;
   const listName = req.body.list;
-
+  var days = date();
   const item = new Item({
     name: itemName,
   });
 
-  if (listName === "Today") {
+  if (listName === days) {
     item.save();
     res.redirect("/");
   } else {
@@ -68,8 +68,8 @@ app.post("/", function (req, res) {
 app.post("/delete", function (req, res) {
   const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
-
-  if (listName === "Today") {
+  days = date();
+  if (listName === days) {
     Item.findByIdAndDelete(checkedItemId).then(function (err) {
       if (!err) {
         console.log("successfully deleted");
